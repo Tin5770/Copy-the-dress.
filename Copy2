@@ -1,0 +1,255 @@
+-- สร้าง ScreenGui
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "OutfitCopierGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+
+-- Main Frame (ปรับความสูงเป็น 180 เพื่อให้มีพื้นที่ใส่เครดิตด้านล่าง)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 300, 0, 180)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
+
+-- Top Bar (แถบหัวข้อและปุ่มพับ)
+local TopBar = Instance.new("Frame")
+TopBar.Name = "TopBar"
+TopBar.Size = UDim2.new(1, 0, 0, 35)
+TopBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+TopBar.BorderSizePixel = 0
+TopBar.Parent = MainFrame
+
+local TopBarCorner = Instance.new("UICorner")
+TopBarCorner.CornerRadius = UDim.new(0, 8)
+TopBarCorner.Parent = TopBar
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -40, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Outfit Copier"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 16
+Title.Font = Enum.Font.SourceSansBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TopBar
+
+-- ปุ่มพับหน้าต่าง (Minimize)
+local MinimizeBtn = Instance.new("TextButton")
+MinimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+MinimizeBtn.Position = UDim2.new(1, -35, 0, 2)
+MinimizeBtn.BackgroundTransparency = 1
+MinimizeBtn.Text = "-"
+MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+MinimizeBtn.TextSize = 20
+MinimizeBtn.Font = Enum.Font.SourceSansBold
+MinimizeBtn.Parent = TopBar
+
+-- Container สำหรับเก็บเนื้อหาข้างใน
+local ContentContainer = Instance.new("Frame")
+ContentContainer.Name = "ContentContainer"
+ContentContainer.Size = UDim2.new(1, -20, 1, -45)
+ContentContainer.Position = UDim2.new(0, 10, 0, 40)
+ContentContainer.BackgroundTransparency = 1
+ContentContainer.BorderSizePixel = 0
+ContentContainer.Parent = MainFrame
+
+-- ช่องพิมพ์ชื่อผู้เล่น
+local UsernameBox = Instance.new("TextBox")
+UsernameBox.Size = UDim2.new(1, 0, 0, 35)
+UsernameBox.Position = UDim2.new(0, 0, 0, 10)
+UsernameBox.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+UsernameBox.BorderSizePixel = 0
+UsernameBox.PlaceholderText = "พิมพ์ชื่อผู้เล่นที่นี่..."
+UsernameBox.Text = ""
+UsernameBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+UsernameBox.TextSize = 14
+UsernameBox.Font = Enum.Font.SourceSans
+UsernameBox.Parent = ContentContainer
+
+local BoxCorner = Instance.new("UICorner")
+BoxCorner.CornerRadius = UDim.new(0, 6)
+BoxCorner.Parent = UsernameBox
+
+-- ปุ่มก็อปปี้
+local CopyCustomBtn = Instance.new("TextButton")
+CopyCustomBtn.Size = UDim2.new(1, 0, 0, 35)
+CopyCustomBtn.Position = UDim2.new(0, 0, 0, 55)
+CopyCustomBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+CopyCustomBtn.BorderSizePixel = 0
+CopyCustomBtn.Text = "ดึงชุดจากชื่อที่พิมพ์"
+CopyCustomBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyCustomBtn.TextSize = 14
+CopyCustomBtn.Font = Enum.Font.SourceSansBold
+CopyCustomBtn.Parent = ContentContainer
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0, 6)
+BtnCorner.Parent = CopyCustomBtn
+
+-- ข้อความเครดิต "สร้างโดย Dev Tin Roblox"
+local CreditLabel = Instance.new("TextLabel")
+CreditLabel.Size = UDim2.new(1, 0, 0, 20)
+CreditLabel.Position = UDim2.new(0, 0, 0, 105)
+CreditLabel.BackgroundTransparency = 1
+CreditLabel.Text = "สร้างโดย Dev Tin Roblox"
+CreditLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+CreditLabel.TextSize = 12
+CreditLabel.Font = Enum.Font.SourceSansItalic
+CreditLabel.TextXAlignment = Enum.TextXAlignment.Center
+CreditLabel.Parent = ContentContainer
+
+-----------------------------------------------
+-- ฟังก์ชันบังคับเชื่อมเครื่องประดับ (Force Weld)
+-----------------------------------------------
+local function ForceEquipAccessory(myChar, accessory)
+	local handle = accessory:FindFirstChild("Handle")
+	if not handle then return end
+
+	for _, child in ipairs(handle:GetChildren()) do
+		if child:IsA("JointInstance") or child:IsA("Weld") or child:IsA("WeldConstraint") then
+			child:Destroy()
+		end
+	end
+
+	handle.Anchored = false
+	handle.CanCollide = false
+
+	local accAttachment = handle:FindFirstChildOfClass("Attachment")
+	if not accAttachment then 
+		local hum = myChar:FindFirstChildOfClass("Humanoid")
+		if hum then hum:AddAccessory(accessory) end
+		return
+	end
+
+	local targetPart = nil
+	local targetAttachment = nil
+
+	for _, part in ipairs(myChar:GetDescendants()) do
+		if part:IsA("BasePart") then
+			local att = part:FindFirstChild(accAttachment.Name)
+			if att and att:IsA("Attachment") then
+				targetPart = part
+				targetAttachment = att
+				break
+			end
+		end
+	end
+
+	if targetPart and targetAttachment then
+		accessory.Parent = myChar
+		
+		local weld = Instance.new("Weld")
+		weld.Name = "AccessoryWeld"
+		weld.Part0 = targetPart
+		weld.Part1 = handle
+		weld.C0 = targetAttachment.CFrame
+		weld.C1 = accAttachment.CFrame
+		weld.Parent = handle
+	else
+		local hum = myChar:FindFirstChildOfClass("Humanoid")
+		if hum then hum:AddAccessory(accessory) end
+	end
+end
+
+-----------------------------------------------
+-- ฟังก์ชันสวมชุดทั้งหมด
+-----------------------------------------------
+local function CopyOutfitFromModel(sourceModel)
+	local myChar = LocalPlayer.Character
+	if not myChar or not sourceModel then return end
+	
+	local myHead = myChar:FindFirstChild("Head")
+	
+	-- ถอดของเก่าทิ้ง
+	for _, item in ipairs(myChar:GetChildren()) do
+		if item:IsA("Accessory") or item:IsA("Accoutrement") or item:IsA("Shirt") or item:IsA("Pants") or item:IsA("ShirtGraphic") or item:IsA("BodyColors") then
+			item:Destroy()
+		end
+	end
+	
+	if myHead then
+		for _, item in ipairs(myHead:GetChildren()) do
+			if item:IsA("Decal") then item:Destroy() end
+		end
+	end
+	
+	-- ใส่ของใหม่
+	for _, item in ipairs(sourceModel:GetChildren()) do
+		if item:IsA("Accessory") or item:IsA("Accoutrement") then
+			local clone = item:Clone()
+			ForceEquipAccessory(myChar, clone)
+			
+		elseif item:IsA("Shirt") or item:IsA("Pants") or item:IsA("ShirtGraphic") or item:IsA("BodyColors") then
+			item:Clone().Parent = myChar
+			
+		elseif item:IsA("Decal") then
+			if myHead then item:Clone().Parent = myHead end
+		end
+	end
+end
+
+-----------------------------------------------
+-- ปุ่มกดค้นหาและดึงชุด
+-----------------------------------------------
+CopyCustomBtn.MouseButton1Click:Connect(function()
+	local targetName = UsernameBox.Text
+	if targetName == "" then return end
+
+	CopyCustomBtn.Text = "กำลังโหลด..."
+	
+	task.spawn(function()
+		local success, userId = pcall(function()
+			return Players:GetUserIdFromNameAsync(targetName)
+		end)
+
+		if success and userId then
+			local appearanceModel
+			local modelSuccess, _ = pcall(function()
+				appearanceModel = Players:GetCharacterAppearanceAsync(userId)
+			end)
+			
+			if modelSuccess and appearanceModel then
+				CopyOutfitFromModel(appearanceModel)
+				appearanceModel:Destroy()
+				CopyCustomBtn.Text = "ดึงชุดสำเร็จ!"
+			else
+				CopyCustomBtn.Text = "โหลดชุดล้มเหลว"
+			end
+		else
+			CopyCustomBtn.Text = "ไม่พบชื่อผู้เล่นนี้"
+		end
+		
+		task.wait(2)
+		CopyCustomBtn.Text = "ดึงชุดจากชื่อที่พิมพ์"
+	end)
+end)
+
+-----------------------------------------------
+-- ระบบพับเก็บหน้าต่าง
+-----------------------------------------------
+local isMinimized = false
+MinimizeBtn.MouseButton1Click:Connect(function()
+	isMinimized = not isMinimized
+	if isMinimized then
+		ContentContainer.Visible = false
+		MainFrame.Size = UDim2.new(0, 300, 0, 35)
+		MinimizeBtn.Text = "+"
+	else
+		ContentContainer.Visible = true
+		MainFrame.Size = UDim2.new(0, 300, 0, 180)
+		MinimizeBtn.Text = "-"
+	end
+end)
