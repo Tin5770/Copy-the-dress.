@@ -8,11 +8,11 @@ ScreenGui.Name = "OutfitCopierGui"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
--- Main Frame (หน้าต่างหลัก ปรับขนาดให้เล็กลงเพราะตัดรายชื่อออก)
+-- Main Frame (ปรับความสูงเป็น 180 เพื่อให้มีพื้นที่ใส่เครดิตด้านล่าง)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 300, 0, 160)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -80)
+MainFrame.Size = UDim2.new(0, 300, 0, 180)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
 MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -39,7 +39,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -40, 1, 0)
 Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "Outfit Copier (Search)"
+Title.Text = "Outfit Copier"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 16
 Title.Font = Enum.Font.SourceSansBold
@@ -60,8 +60,8 @@ MinimizeBtn.Parent = TopBar
 -- Container สำหรับเก็บเนื้อหาข้างใน
 local ContentContainer = Instance.new("Frame")
 ContentContainer.Name = "ContentContainer"
-ContentContainer.Size = UDim2.new(1, -20, 1, -50)
-ContentContainer.Position = UDim2.new(0, 10, 0, 45)
+ContentContainer.Size = UDim2.new(1, -20, 1, -45)
+ContentContainer.Position = UDim2.new(0, 10, 0, 40)
 ContentContainer.BackgroundTransparency = 1
 ContentContainer.BorderSizePixel = 0
 ContentContainer.Parent = MainFrame
@@ -98,6 +98,18 @@ CopyCustomBtn.Parent = ContentContainer
 local BtnCorner = Instance.new("UICorner")
 BtnCorner.CornerRadius = UDim.new(0, 6)
 BtnCorner.Parent = CopyCustomBtn
+
+-- ข้อความเครดิต "สร้างโดย Dev Tin Roblox"
+local CreditLabel = Instance.new("TextLabel")
+CreditLabel.Size = UDim2.new(1, 0, 0, 20)
+CreditLabel.Position = UDim2.new(0, 0, 0, 105)
+CreditLabel.BackgroundTransparency = 1
+CreditLabel.Text = "สร้างโดย Dev Tin Roblox"
+CreditLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+CreditLabel.TextSize = 12
+CreditLabel.Font = Enum.Font.SourceSansItalic
+CreditLabel.TextXAlignment = Enum.TextXAlignment.Center
+CreditLabel.Parent = ContentContainer
 
 -----------------------------------------------
 -- ฟังก์ชันบังคับเชื่อมเครื่องประดับ (Force Weld)
@@ -237,7 +249,7 @@ MinimizeBtn.MouseButton1Click:Connect(function()
 		MinimizeBtn.Text = "+"
 	else
 		ContentContainer.Visible = true
-		MainFrame.Size = UDim2.new(0, 300, 0, 160)
+		MainFrame.Size = UDim2.new(0, 300, 0, 180)
 		MinimizeBtn.Text = "-"
 	end
 end)
